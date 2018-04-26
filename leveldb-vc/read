@@ -1,0 +1,3 @@
+https://github.com/kobake/leveldb-vc140-nuget
+
+Add this to linker addition definition leveldb.lib;shlwapi.lib; !!!!
