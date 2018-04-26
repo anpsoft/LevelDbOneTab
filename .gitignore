@@ -1,7 +1,5 @@
-!leveldb-vc/Release/
-!leveldb-vc/Debug/
 
-!exe/LevelDbOneTab.exe
+
 
 
 ## Ignore Visual Studio temporary files, build results, and
@@ -265,3 +263,7 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+
+!leveldb-vc/Release/
+!leveldb-vc/Debug/
