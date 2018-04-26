@@ -1,6 +1,7 @@
-!leveldb-vc\Release\leveldb.lib
-!leveldb-vc\Debug\leveldb.lib
-!exe\LevelDbOneTab.exe
+!leveldb-vc/Release/
+!leveldb-vc/Debug/
+
+!exe/LevelDbOneTab.exe
 
 
 ## Ignore Visual Studio temporary files, build results, and
