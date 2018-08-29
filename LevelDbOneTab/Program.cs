@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.IO.Compression;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace ConsoleApp1 {
 
@@ -47,10 +49,11 @@ namespace ConsoleApp1 {
 
             if (DbOpen(path)) {
 
-                var keys = new string[] {
-                    "state", "topSites", "settings", "lastSeenVersion",
-                    "installDate", "idCounter", "extensionKey"
-                };
+                //var keys = new string[] {
+                //    "state", "topSites", "settings", "lastSeenVersion",
+                //    "installDate", "idCounter", "extensionKey"
+                //};
+                var keys = new string[] { "state" };
 
                 string[] files = (string[])keys.Clone();
 
@@ -90,10 +93,10 @@ namespace ConsoleApp1 {
                     try {
 
                         // Create a byte array to hold data from unmanaged memory.
-                        byte[] data = new byte[bufferLen];
+                        byte[] data = new byte[bufferLen-1];
 
                         // Read from unmanaged memory to the byte array.
-                        ums.Read(data, 0, (int)bufferLen);
+                        ums.Read(data, 0, (int)bufferLen-1);
 
                         // Save data as is 
                         DbSaveBinary(add + ".bin");
@@ -101,7 +104,7 @@ namespace ConsoleApp1 {
                         // Save data as formated json 
                         if (mode) {
                             string s = Encoding.Unicode.GetString(data);
-                            File.WriteAllText(add + ".json", FormatJson2(s));
+                            File.WriteAllText(add + ".json", JToken.Parse(s).ToString(Formatting.Indented));
                         }
 
                     }
@@ -118,91 +121,6 @@ namespace ConsoleApp1 {
 
 
 
-        private const string INDENT_STRING = "    ";
-
-        static string FormatJson(string json) {
-            int indentation = 0;
-            int quoteCount = 0;
-            var result =
-                from ch in json
-                let quotes = ch == '"' ? quoteCount++ : quoteCount
-                let lineBreak = ch == ',' && quotes % 2 == 0 ? ch + Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, indentation)) : null
-                let openChar = ch == '{' || ch == '[' ? ch + Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, ++indentation)) : ch.ToString()
-                let closeChar = ch == '}' || ch == ']' ? Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, --indentation)) + ch : ch.ToString()
-                select lineBreak == null
-                            ? openChar.Length > 1
-                                ? openChar
-                                : closeChar
-                            : lineBreak;
-
-            return String.Concat(result);
-        }
-
-
-        private const int INDENT_SIZE = 2;
-
-        public static string FormatJson2(string str) {
-            str = (str ?? "").Replace("{}", @"\{\}").Replace("[]", @"\[\]");
-
-            var inserts = new List<int[]>();
-            bool quoted = false, escape = false;
-            int depth = 0/*-1*/;
-
-            for (int i = 0, N = str.Length; i < N; i++) {
-                var chr = str[i];
-
-                if (!escape && !quoted)
-                    switch (chr) {
-                        case '{':
-                        case '[':
-                            inserts.Add(new[] { i, +1, 0, INDENT_SIZE * ++depth });
-                            //int n = (i == 0 || "{[,".Contains(str[i - 1])) ? 0 : -1;
-                            //inserts.Add(new[] { i, n, INDENT_SIZE * ++depth * -n, INDENT_SIZE - 1 });
-                            break;
-                        case ',':
-                            inserts.Add(new[] { i, +1, 0, INDENT_SIZE * depth });
-                            //inserts.Add(new[] { i, -1, INDENT_SIZE * depth, INDENT_SIZE - 1 });
-                            break;
-                        case '}':
-                        case ']':
-                            inserts.Add(new[] { i, -1, INDENT_SIZE * --depth, 0 });
-                            //inserts.Add(new[] { i, -1, INDENT_SIZE * depth--, 0 });
-                            break;
-                        case ':':
-                            inserts.Add(new[] { i, 0, 1, 1 });
-                            break;
-                    }
-
-                quoted = (chr == '"') ? !quoted : quoted;
-                escape = (chr == '\\') ? !escape : false;
-            }
-
-            if (inserts.Count > 0) {
-                var sb = new System.Text.StringBuilder(str.Length * 2);
-
-                int lastIndex = 0;
-                foreach (var insert in inserts) {
-                    int index = insert[0], before = insert[2], after = insert[3];
-                    bool nlBefore = (insert[1] == -1), nlAfter = (insert[1] == +1);
-
-                    sb.Append(str.Substring(lastIndex, index - lastIndex));
-
-                    if (nlBefore) sb.AppendLine();
-                    if (before > 0) sb.Append(new String(' ', before));
-
-                    sb.Append(str[index]);
-
-                    if (nlAfter) sb.AppendLine();
-                    if (after > 0) sb.Append(new String(' ', after));
-
-                    lastIndex = index + 1;
-                }
-
-                str = sb.ToString();
-            }
-
-            return str.Replace(@"\{\}", "{}").Replace(@"\[\]", "[]");
-        }
 
 
         // Create a ZIP file of the files provided.

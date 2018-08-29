@@ -71,6 +71,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
@@ -88,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\MyLevelDB\Debug\MyLevelDb.dll">
@@ -117,6 +121,14 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy  LevelDbOneTab.exe  ..\..\..\..\exe\LevelDbOneTab.exe &gt; d:\aa</PostBuildEvent>
+    <PostBuildEvent>copy  LevelDbOneTab.exe   /Y  ..\..\..\exepath\LevelDbOneTab.exe  &gt; d:\aa
+copy  MyLevelDb.dll             /Y  ..\..\..\exepath\MyLevelDb.dll           &gt; d:\aa
+copy  Newtonsoft.Json.dll   /Y  ..\..\..\exepath\Newtonsoft.Json.dll  &gt; d:\aa
+
+
+
+
+
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
