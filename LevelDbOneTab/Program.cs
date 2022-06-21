@@ -53,7 +53,7 @@ namespace ConsoleApp1 {
                 //    "state", "topSites", "settings", "lastSeenVersion",
                 //    "installDate", "idCounter", "extensionKey"
                 //};
-                var keys = new string[] { "state" };
+                var keys = new string[] { "oldState" };
 
                 string[] files = (string[])keys.Clone();
 
