@@ -1,6 +1,8 @@
 # LevelDbOneTab
 LevelDbOneTab
 
+CAUTION: Restoring doesn't really work right now due to recent OneTab changes
+
 Export data from Chrome or Vivaldi extension OneTab - 
 https://chrome.google.com/webstore/detail/onetab/chphlpgkkbolifaimnlloiipkdnihall?hl=uk
 
